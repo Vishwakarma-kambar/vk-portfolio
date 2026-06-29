@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vishwakarma Kambar | Portfolio</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                    },
+                    colors: {
+                        brandBg: '#f8fafc',
+                        brandAccentBg: '#f0f6ff',
+                        brandPrimary: '#2563eb', // Mid-Blue
+                        brandLightBlue: '#60a5fa',
+                        brandTextDark: '#0f172a',
+                        brandTextMuted: '#475569',
+                        wfGrayDark: '#1e1e1e', // Accurate Webflow Color scheme
+                        wfGrayMedium: '#2c2c2c',
+                        wfGrayLight: '#3a3a3a',
+                        wfBlue: '#4353ff',
+                        wfCream: '#fbf7f4' // Screenshot Canvas Color
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            overflow-x: hidden;
+        }
+        /* Custom Cursor styling */
+        #custom-cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #2563eb;
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+            mix-blend-mode: difference;
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(37, 99, 235, 0.12);
+        }
+        .blue-glow {
+            box-shadow: 0 10px 40px rgba(37, 99, 235, 0.08);
+        }
+        .canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            z-index: -1;
+            pointer-events: none;
+        }
+        /* 3D tilt perspective setup */
+        .tilt-card {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            transition: transform 0.15s ease-out;
+        }
+        .tilt-inner {
+            transform: translateZ(20px);
+        }
+         /* Scoped Webflow Panel Scrollbar Styling */
+        .wf-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .wf-scrollbar::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+        .wf-scrollbar::-webkit-scrollbar-thumb {
+            background: #3a3a3a;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="antialiased font-sans font-medium">
+
+    <!-- Custom Cursor -->
+    <div id="custom-cursor" class="hidden md:block"></div>
+
+    <!-- 3D Interactive Mesh Background Canvas -->
+    <div class="canvas-container hidden md:block">
+        <canvas id="three-canvas"></canvas>
+    </div>
+
+    <!-- Header / Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-50 glassmorphism transition-all duration-300 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <a href="#" class="font-display font-bold text-xl tracking-tight bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                VISHWAKARMA K.
+            </a>
+            <div class="hidden md:flex items-center space-x-8 text-sm font-semibold text-brandTextDark font-display">
+                <a href="#about" class="hover:text-brandPrimary transition-colors">About</a>
+                <a href="#automation-demo" class="hover:text-brandPrimary transition-colors">Automation</a>
+                <a href="#webflow-designer" class="hover:text-brandPrimary transition-colors flex items-center gap-1.5">
+                    <i class="fa-brands fa-webflow text-brandPrimary"></i> Webflow Hub & Engine
+                </a>
+                <a href="#experience" class="hover:text-brandPrimary transition-colors">Experience</a>
+                <a href="#skills" class="hover:text-brandPrimary transition-colors">Skills</a>
+                <a href="#contact" class="px-5 py-2.5 rounded-xl bg-brandPrimary text-white shadow-md shadow-blue-500/20 hover:bg-blue-700 transition-all">Let's Connect</a>
+            </div>
+            <!-- Mobile Menu Trigger -->
+            <button class="md:hidden text-brandTextDark hover:text-brandPrimary" onclick="toggleMobileMenu()">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+        </div>
+        <!-- Mobile Menu (Dropdown) -->
+        <div id="mobile-menu" class="hidden md:hidden glassmorphism absolute top-20 left-0 w-full p-6 flex flex-col space-y-4 border-t border-blue-100">
+            <a href="#about" onclick="toggleMobileMenu()" class="text-brandTextDark hover:text-brandPrimary font-medium">About</a>
+            <a href="#automation-demo" onclick="toggleMobileMenu()" class="text-brandPrimary hover:text-blue-800 font-semibold">Automation</a>
+            <a href="#webflow-designer" onclick="toggleMobileMenu()" class="text-brandPrimary hover:text-blue-800 font-semibold hidden md:block">Webflow Hub</a>
+            <a href="#experience" onclick="toggleMobileMenu()" class="text-brandTextDark hover:text-brandPrimary font-medium">Experience</a>
+            <a href="#skills" onclick="toggleMobileMenu()" class="text-brandTextDark hover:text-brandPrimary font-medium">Skills</a>
+            <a href="#contact" onclick="toggleMobileMenu()" class="text-brandTextDark hover:text-brandPrimary font-medium">Contact</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="min-h-screen flex items-center justify-center pt-24 relative px-6">
+        <div class="max-w-5xl mx-auto text-center z-10 space-y-8">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-xs font-bold text-brandPrimary border border-blue-200 uppercase tracking-widest">
+                <span class="w-2 h-2 rounded-full bg-blue-600 animate-ping"></span> Available for Scale-up Roles
+            </div>
+            <h1 class="text-5xl md:text-8xl font-display font-black tracking-tight text-brandTextDark leading-tight">
+                Responsive & <br>
+                <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 bg-clip-text text-transparent">Interactive Platforms</span>
+            </h1>
+            <p class="text-lg md:text-2xl font-black md:text-xl max-w-2xl mx-auto font-normal leading-relaxed">
+                <strong>I'm <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 bg-clip-text text-transparent">Vishwakarma Kambar</span>. A Webflow Developer with 3+ years of experience who loves custom frontend and vibe-coding. I combine code (React, JS, CSS) with Webflow to build smooth, automated websites.</strong>
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4 font-display">
+                <a href="#automation-demo" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-brandPrimary hover:bg-blue-700 text-white font-bold flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-500/20 hover:scale-105">
+                    <i class="fa-brands fa-webflow text-lg"></i> Run Automation Demo
+                </a>
+                <a href="#webflow-designer" class="w-full sm:w-auto px-8 py-4 rounded-xl glassmorphism hover:bg-white text-brandTextDark font-bold border border-blue-200 transition-all hover:scale-105">
+                    Demo Webflow Designer
+                </a>
+            </div>
+        </div>
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 text-brandPrimary animate-bounce">
+            <i class="fa-solid fa-chevron-down text-2xl"></i>
+        </div>
+    </section>
+
+    <!-- EXCLUSIVE WEBFLOW HUB SECTION (With Interactive Simulator Tool) -->
+    <section id="automation-demo" class="py-24 px-6 bg-brandAccentBg/60 relative">
+        <div class="max-w-6xl mx-auto space-y-16">
+            <div class="text-center space-y-4 scroll-reveal">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100 text-brandPrimary text-xs font-bold uppercase tracking-wide font-display">
+                    <i class="fa-brands fa-webflow"></i> Platform Focus
+                </div>
+                <h2 class="text-4xl md:text-6xl font-display font-black text-brandTextDark">Webflow & Automation Hub</h2>
+                <p class="text-brandTextMuted max-w-2xl mx-auto font-medium">
+                    Integrating modular, production-ready Webflow architectures with automated lead pipelines. Try the live interactive simulation pipeline below.
+                </p>
+            </div>
+
+            <!-- Crazy Simulator Feature Card -->
+            <div class="p-8 md:p-12 glassmorphism rounded-3xl border border-blue-200 relative overflow-hidden scroll-reveal shadow-lg">
+                <div class="absolute top-0 right-0 w-96 h-96 bg-blue-100 rounded-full blur-[120px] pointer-events-none"></div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    <div class="lg:col-span-5 space-y-6 z-10 text-left">
+                        <span class="text-xs font-bold text-brandPrimary uppercase tracking-widest font-display">Automation Concept</span>
+                        <h3 class="text-3xl font-display font-black text-brandTextDark leading-tight">Clay × Webflow × Make Integration</h3>
+                        <p class="text-sm text-brandTextMuted leading-relaxed font-medium">
+                            I designed a pipeline that triggers whenever a LinkedIn URL is identified. The lead data gets synthesized through Clay, routed via Make triggers, and automatically spins up a custom-built Webflow landing page matching the prospect's visual profile.
+                        </p>
+                        
+                        <!-- Interactive Play Field -->
+                        <div class="space-y-4 pt-2 font-display">
+                            <label class="block text-xs font-bold uppercase text-brandTextDark tracking-wider">Simulate Pipeline Execution:</label>
+                            <div class="flex gap-2">
+                                <input id="simulator-url" type="text" placeholder="linkedin.com/in/john-doe" class="w-full px-4 py-2.5 rounded-lg border border-blue-200 text-sm focus:outline-none focus:ring-2 focus:ring-brandPrimary text-brandTextDark font-medium font-sans">
+                                <button id="run-simulation" class="px-5 py-2.5 rounded-lg bg-brandPrimary hover:bg-blue-700 text-white text-sm font-bold transition-all shadow-md flex items-center gap-2 whitespace-nowrap">
+                                    <i class="fa-solid fa-play"></i> Generate
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simulator Output Screen -->
+                    <div class="lg:col-span-7 bg-white border border-blue-100 rounded-2xl p-6 md:p-8 space-y-6 shadow-sm relative z-10 text-left">
+                        <div class="flex items-center justify-between border-b border-blue-50 pb-4 font-display">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-red-400"></span>
+                                <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
+                                <span class="w-3 h-3 rounded-full bg-green-400"></span>
+                            </div>
+                            <span class="text-xs font-semibold text-brandTextMuted">engine_pipeline_status.logs</span>
+                        </div>
+
+                        <!-- Progress Steps Dynamic Track -->
+                        <div id="simulation-logs" class="space-y-4 min-h-[140px] text-xs font-mono text-brandTextMuted">
+                            <p class="text-brandPrimary"><i class="fa-solid fa-terminal mr-2"></i> Ready. Enter a simulated URL and click Generate to run pipeline.</p>
+                        </div>
+
+                        <!-- Rendered Output Card Preview Mock -->
+                        <div id="simulated-preview-card" class="p-4 bg-blue-50/50 border border-blue-200/60 rounded-xl hidden flex items-center justify-between transition-all duration-500 scale-95 opacity-0 font-display">
+                            <div>
+                                <h4 class="font-bold text-sm text-brandTextDark" id="preview-title">John Doe's Bespoke Landing</h4>
+                                <p class="text-[10px] text-brandTextMuted font-sans">Template Live at: <span class="text-brandPrimary">webflow.io/prospect-preview</span></p>
+                            </div>
+                            <span class="px-3 py-1 bg-green-100 border border-green-200 text-[10px] text-green-700 font-bold rounded-full">Deploy Success</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Webflow Implementations -->
+            <div class="space-y-8 scroll-reveal">
+                <h3 class="text-2xl font-display font-black text-brandTextDark text-center">Projects</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 text-left">
+                    <!-- Brand Card 1 -->
+                    <a href="https://df-f.com/" class="p-6 bg-white border cursor-pointer border-blue-100 rounded-2xl hover:border-brandPrimary hover:-translate-y-2 transition-all duration-300 group shadow-sm tilt-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-lg font-bold text-brandTextDark group-hover:text-brandPrimary transition-colors font-display">Dataflow Forensics</h4>
+                            <span class="text-[10px] bg-blue-50 text-brandPrimary px-2.5 py-1 rounded font-bold uppercase font-display">Security Tech</span>
+                        </div>
+                        <p class="text-sm text-brandTextMuted leading-relaxed font-medium">Developing threat detection landing engines for governmental, national defense, and civil security infrastructure networks.</p>
+                    </a>
+                    <!-- Brand Card 2 -->
+                    <a href="https://filespin.io/" class="cursor-pointer p-6 bg-white border border-blue-100 rounded-2xl hover:border-brandPrimary hover:-translate-y-2 transition-all duration-300 group shadow-sm tilt-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-lg font-bold text-brandTextDark group-hover:text-brandPrimary transition-colors font-display">Filespin</h4>
+                            <span class="text-[10px] bg-blue-50 text-brandPrimary px-2.5 py-1 rounded font-bold uppercase font-display">Digital Asset</span>
+                        </div>
+                        <p class="text-sm text-brandTextMuted leading-relaxed font-medium">Scaling AI asset pipeline automation templates reaching international networks across 85+ countries.</p>
+                    </a>
+                    <!-- Brand Card 3 -->
+                    <a href="https://www.pavero.co/" class="cursor-pointer p-6 bg-white border border-blue-100 rounded-2xl hover:border-brandPrimary hover:-translate-y-2 transition-all duration-300 group shadow-sm tilt-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-lg font-bold text-brandTextDark group-hover:text-brandPrimary transition-colors font-display">Pavero</h4>
+                            <span class="text-[10px] bg-blue-50 text-brandPrimary px-2.5 py-1 rounded font-bold uppercase font-display">Web Agency</span>
+                        </div>
+                        <p class="text-sm text-brandTextMuted leading-relaxed font-medium">Providing streamlined asset generation, styling interactions, and custom CMS setups for marketing web engines.</p>
+                    </a>
+                    <!-- Brand Card 4 -->
+                    <a href="https://www.miroq.co/" class="cursor-pointer p-6 bg-white border border-blue-100 rounded-2xl hover:border-brandPrimary hover:-translate-y-2 transition-all duration-300 group shadow-sm tilt-card">
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-lg font-bold text-brandTextDark group-hover:text-brandPrimary transition-colors font-display">Miroq</h4>
+                            <span class="text-[10px] bg-blue-50 text-brandPrimary px-2.5 py-1 rounded font-bold uppercase font-display">Fitness</span>
+                        </div>
+                        <p class="text-sm text-brandTextMuted leading-relaxed font-medium">Miroq empowers individuals to live healthier and more fulfilling lives through coaching, wellness programs, and personal
+development resources</p>
+                    </a>
+                </div>
+
+                <!-- Webflow Sub-grid -->
+                <div class="p-6 bg-white border border-blue-100 rounded-2xl shadow-sm text-left font-display">
+                    <h4 class="text-xs font-bold text-brandTextDark uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-code-branch text-brandPrimary"></i> Managed & Maintained Projects:
+                    </h4>
+                    <div class="flex flex-wrap gap-2 font-sans font-semibold">
+                       <a href="https://www.revsure.ai/" class="px-3.5 py-1.5 bg-blue-50 border border-blue-100 rounded-xl text-xs text-brandTextDark hover:bg-brandPrimary hover:text-white transition-colors cursor-pointer">Revsure</a>
+                       <a href="https://www.daxa.ai/" class="px-3.5 py-1.5 bg-blue-50 border border-blue-100 rounded-xl text-xs text-brandTextDark hover:bg-brandPrimary hover:text-white transition-colors cursor-pointer">DAXA</a>
+                       <a href="https://www.sentisum.com/" class="px-3.5 py-1.5 bg-blue-50 border border-blue-100 rounded-xl text-xs text-brandTextDark hover:bg-brandPrimary hover:text-white transition-colors cursor-pointer">Sentisum</a>
+                       <a href="https://www.codewalnut.com/" class="px-3.5 py-1.5 bg-blue-50 border border-blue-100 rounded-xl text-xs text-brandTextDark hover:bg-brandPrimary hover:text-white transition-colors cursor-pointer">CodeWalnut</a>
+                       <a href="https://www.leadwalnut.com/" class="px-3.5 py-1.5 bg-blue-50 border border-blue-100 rounded-xl text-xs text-brandTextDark hover:bg-brandPrimary hover:text-white transition-colors cursor-pointer">LeadWalnut</a>
+                       <a href="https://thepurplebook.club/" class="px-3.5 py-1.5 bg-blue-50 border border-blue-100 rounded-xl text-xs text-brandTextDark hover:bg-brandPrimary hover:text-white transition-colors cursor-pointer">Purple Book Community</a>
+                       <a href="https://www.nitrousdesign.com/" class="px-3.5 py-1.5 bg-blue-50 border border-blue-100 rounded-xl text-xs text-brandTextDark hover:bg-brandPrimary hover:text-white transition-colors cursor-pointer">Nitrous</a>
+                       <a href="https://www.helicap.com/" class="px-3.5 py-1.5 bg-blue-50 border border-blue-100 rounded-xl text-xs text-brandTextDark hover:bg-brandPrimary hover:text-white transition-colors cursor-pointer">Helicap</a>
+                       <a href="https://alignedautomation.com/" class="px-3.5 py-1.5 bg-blue-50 border border-blue-100 rounded-xl text-xs text-brandTextDark hover:bg-brandPrimary hover:text-white transition-colors cursor-pointer">Aligned Automation</a>
+                   </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 100% Screen-Accurate Webflow Designer UI Container -->
+    <section id="webflow-designer" class="py-20 px-6 bg-brandAccentBg/60 text-slate-300 relative font-sans hidden md:block">
+        <div class="max-w-7xl mx-auto space-y-12">
+            
+            <!-- Header Text -->
+            <div class="text-center space-y-4 max-w-3xl mx-auto">
+                <span class="px-3 py-1 bg-blue-500/10 text-blue-400 border border-blue-500/20 text-xs font-bold uppercase tracking-wider rounded-full font-display">Interactive Webflow Studio</span>
+                <h2 class="text-3xl md:text-5xl font-display font-bold text-brandTextDark">Interactive Style Inspector</h2>
+                <p class="text-sm text-brandTextMuted leading-relaxed font-medium">
+                    Replicating 100% of the Webflow UI panel layout. Click the **Interactive Demo Card** inside the canvas, then use the right-side **Style panel** controls to customize the padding, fonts, and colors of the card live!
+                </p>
+            </div>
+
+            <!-- Webflow App Frame Window -->
+            <div class="rounded-2xl border border-slate-700 bg-wfGrayDark flex flex-col overflow-hidden shadow-2xl h-[750px] md:h-[820px]">
+                
+                <!-- 1. Top Control Bar (Design, CMS, Publish, Viewport Indicators) -->
+                <div class="bg-wfGrayDark border-b border-slate-800 px-4 py-3 flex items-center justify-between text-xs font-semibold text-slate-400 select-none">
+                    <div class="flex items-center gap-4">
+                        <span class="text-white flex items-center gap-1.5"><i class="fa-brands fa-webflow text-blue-500 text-sm"></i></span>
+                        <div class="flex items-center gap-3 border-l border-slate-800 pl-4 text-[11px]">
+                            <span class="px-2 py-0.5 bg-slate-800 text-white rounded"><i class="fa-solid fa-paint-brush mr-1"></i> Design</span>
+                            <span class="hover:text-white cursor-pointer"><i class="fa-solid fa-database mr-1"></i> CMS</span>
+                            <span class="hover:text-white cursor-pointer"><i class="fa-solid fa-chart-line mr-1"></i> Insights</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Viewport size indicators matching screenshot schema -->
+                    <div class="hidden md:flex items-center gap-4 text-slate-400">
+                        <div class="flex items-center gap-2 border-r border-slate-800 pr-4">
+                            <i class="fa-solid fa-mobile-screen hover:text-white cursor-pointer"></i>
+                            <i class="fa-solid fa-mobile-screen-button hover:text-white cursor-pointer rotate-90"></i>
+                            <i class="fa-solid fa-tablet-screen-button hover:text-white cursor-pointer"></i>
+                            <i class="fa-solid fa-desktop text-blue-400 cursor-pointer"></i>
+                        </div>
+                        <span class="font-mono text-[11px] text-slate-300 flex items-center gap-1">
+                            1279px <i class="fa-solid fa-chevron-down text-[8px]"></i>
+                        </span>
+                    </div>
+
+                    <div class="flex items-center gap-2">
+                        <span class="px-2 py-1 bg-slate-800 rounded font-mono text-slate-300 text-[10px]">
+                            cognida-ai.design.webflow.com
+                        </span>
+                        <span class="px-2.5 py-1 bg-wfBlue text-white rounded font-bold text-[11px] hover:bg-indigo-600 cursor-pointer">Publish</span>
+                    </div>
+                </div>
+
+                <!-- 2. Breadcrumb Navigation Bar -->
+                <div class="bg-wfGrayMedium border-b border-slate-800 px-4 py-2 flex items-center justify-between text-[11px] text-slate-400 select-none font-mono">
+                    <div class="flex items-center gap-1.5 truncate">
+                        <span class="text-slate-500">Body</span> <i class="fa-solid fa-chevron-right text-[8px] text-slate-600"></i>
+                        <span class="text-slate-500">section</span> <i class="fa-solid fa-chevron-right text-[8px] text-slate-600"></i>
+                        <span class="text-slate-500">main-wp</span> <i class="fa-solid fa-chevron-right text-[8px] text-slate-600"></i>
+                        <span class="text-slate-500">hero-logo-wp</span> <i class="fa-solid fa-chevron-right text-[8px] text-slate-600"></i>
+                        <span class="text-slate-300">marquee-logo-wp</span> <i class="fa-solid fa-chevron-right text-[8px] text-slate-600"></i>
+                        <span class="text-blue-400 font-bold">marquee-logo</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-[10px]">
+                        <span class="text-slate-500"><i class="fa-solid fa-eye"></i> Layout Mode</span>
+                    </div>
+                </div>
+
+                <!-- Workspace Core (Three-Column Layout Setup) -->
+                <div class="flex flex-1 overflow-hidden">
+                    
+                    <!-- LEFT SIDEBAR: Navigator Tree Panel -->
+                    <div class="w-64 bg-wfGrayDark border-r border-slate-800 flex flex-col text-[11px] font-medium select-none hidden lg:flex">
+                        <div class="p-3 border-b border-slate-800 flex justify-between items-center text-slate-400 font-bold uppercase tracking-wider">
+                            <span>Navigator</span>
+                            <i class="fa-solid fa-folder-tree"></i>
+                        </div>
+                        <div class="p-3 space-y-2 overflow-y-auto wf-scrollbar flex-1 text-slate-400">
+                            <div class="flex items-center gap-2 text-white"><i class="fa-solid fa-desktop text-blue-500"></i> Body</div>
+                            <div class="pl-3 flex items-center gap-2"><i class="fa-solid fa-code text-indigo-400"></i> Global Code</div>
+                            <div class="pl-3 flex items-center gap-2"><i class="fa-solid fa-compass"></i> main-nav</div>
+                            <div class="pl-3 flex items-center gap-2 text-white"><i class="fa-solid fa-cubes text-blue-400"></i> section</div>
+                            <div class="pl-6 flex items-center gap-2"><i class="fa-solid fa-code text-yellow-500"></i> Code Embed</div>
+                            <div class="pl-6 flex items-center gap-2"><i class="fa-solid fa-table-cells-large"></i> ani-hero-grid</div>
+                            <div class="pl-3 flex items-center gap-2 text-slate-200"><i class="fa-solid fa-cubes text-blue-400"></i> hero-logo-wp</div>
+                            <div class="pl-6 flex items-center gap-2"><i class="fa-solid fa-tags"></i> logos-description</div>
+                            <div class="pl-6 flex items-center gap-2 text-blue-400"><i class="fa-solid fa-folder"></i> logo-container</div>
+                            <div class="pl-9 flex items-center gap-2"><i class="fa-solid fa-scroll text-blue-500"></i> marquee-logo-wp</div>
+                            <div class="pl-12 flex items-center gap-2 text-blue-400"><i class="fa-solid fa-file-code"></i> marquee-logo-block</div>
+                            <div class="pl-12 flex items-center gap-2 text-blue-300 font-bold"><i class="fa-solid fa-paint-brush text-blue-500"></i> marquee-logo (active)</div>
+                        </div>
+                    </div>
+
+                    <!-- CENTRAL CANVAS PANEL (Accurate cream background with SaaS dummy layout info) -->
+                    <div class="flex-1 bg-wfCream flex flex-col p-8 overflow-y-auto wf-scrollbar relative">
+                        <div class="space-y-12 max-w-4xl mx-auto w-full z-10">
+
+                            <!-- THE UNIQUE INTERACTIVE DEMO CARD -->
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between font-display">
+                                    <span class="text-xs font-bold uppercase tracking-widest text-blue-600 flex items-center gap-1.5 animate-pulse">
+                                        <span class="w-2 h-2 rounded-full bg-blue-600"></span> Live Interactive Workspace Card
+                                    </span>
+                                    <span class="text-[10px] font-mono text-slate-400">Class: .marquee-logo</span>
+                                </div>
+
+                                <div id="wf-interactive-demo-card" class="bg-white border border-blue-200/75 p-6 shadow-md transition-all duration-300 select-none text-left" style="border-radius: 8px;">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h4 id="wf-demo-card-title" class="text-lg font-black text-blue-600 transition-colors duration-300 font-display">Aesthetic Layout Template</h4>
+                                            <p class="text-[10px] text-slate-400 font-mono mt-0.5">cms_data_id: dynamic_portfolio_01</p>
+                                        </div>
+                                        <span class="px-2.5 py-1 bg-blue-50 text-blue-600 border border-blue-200 text-[10px] font-bold rounded-full font-display">ACTIVE NODE</span>
+                                    </div>
+                                    <p id="wf-demo-card-desc" class="text-xs text-slate-600 leading-relaxed transition-all duration-300 font-medium" style="font-size: 13px;">
+                                        Click options in the style panel on the right. Adjust padding, text-size, layout values, background options, and border radius in real-time.
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- RIGHT SIDEBAR: Detailed Style Panel (Interactive Controls) -->
+                    <div class="w-72 bg-wfGrayDark border-l border-slate-800 flex flex-col text-[11px] font-medium select-none hidden md:flex text-left">
+                        <div class="p-3 border-b border-slate-800 flex justify-between items-center text-slate-400 font-bold uppercase tracking-wider">
+                            <span>Style Inspector</span>
+                            <i class="fa-solid fa-sliders"></i>
+                        </div>
+                        
+                        <div class="p-4 space-y-6 overflow-y-auto wf-scrollbar flex-1">
+                            
+                            <!-- Style Class Indicator Box -->
+                            <div class="space-y-1.5">
+                                <span class="text-[10px] uppercase font-bold text-slate-500">Style Selector</span>
+                                <div class="p-2 bg-slate-800 border border-slate-700 rounded text-blue-400 font-mono font-bold text-[11px] flex justify-between items-center">
+                                    <span>.marquee-logo</span>
+                                    <span class="text-[9px] text-slate-500 font-normal">Active</span>
+                                </div>
+                            </div>
+
+                            <!-- Spacing Setup / Live Visual Margin Box -->
+                            <div class="space-y-2">
+                                <span class="text-[10px] uppercase font-bold text-slate-500">Layout Spacing</span>
+                                <div class="bg-slate-950 p-3 rounded border border-slate-800 font-mono text-[9px] text-center text-slate-500 space-y-1 relative">
+                                    <div class="text-[8px] uppercase font-bold text-slate-600 absolute left-1.5 top-1">Padding</div>
+                                    <div class="text-blue-400" id="wf-val-pad-top">24px</div>
+                                    <div class="flex justify-between items-center text-blue-400 px-6">
+                                        <span id="wf-val-pad-left">24px</span>
+                                        <span class="text-[8px] text-slate-700 uppercase font-bold">DEMO CARD</span>
+                                        <span id="wf-val-pad-right">24px</span>
+                                    </div>
+                                    <div class="text-blue-400" id="wf-val-pad-bottom">24px</div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-1 text-center font-mono">
+                                    <button onclick="setCardPadding('12px')" class="p-1 bg-slate-800 border border-slate-700 rounded text-slate-300 hover:text-white hover:bg-slate-700 transition-colors">12px</button>
+                                    <button onclick="setCardPadding('24px')" class="p-1 bg-blue-600 text-white rounded font-bold transition-colors">24px</button>
+                                    <button onclick="setCardPadding('48px')" class="p-1 bg-slate-800 border border-slate-700 rounded text-slate-300 hover:text-white hover:bg-slate-700 transition-colors">48px</button>
+                                </div>
+                            </div>
+
+                            <!-- Typography font-size controls -->
+                            <div class="space-y-1.5 font-mono">
+                                <span class="text-[10px] uppercase font-bold text-slate-500">Typography - Size</span>
+                                <div class="grid grid-cols-3 gap-1 text-center text-[10px]">
+                                    <button onclick="setCardFontSize('11px')" class="p-1.5 bg-slate-800 border border-slate-700 rounded text-slate-300 hover:text-white hover:bg-slate-700 transition-colors">Small</button>
+                                    <button onclick="setCardFontSize('14px')" class="p-1.5 bg-blue-600 text-white rounded font-bold transition-colors">Normal</button>
+                                    <button onclick="setCardFontSize('18px')" class="p-1.5 bg-slate-800 border border-slate-700 rounded text-slate-300 hover:text-white hover:bg-slate-700 transition-colors">Large</button>
+                                </div>
+                            </div>
+
+                            <!-- Typography font-color controls -->
+                            <div class="space-y-1.5">
+                                <span class="text-[10px] uppercase font-bold text-slate-500">Text Color</span>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="setCardTextColor('#2563eb')" class="w-6 h-6 rounded-full bg-blue-600 border border-slate-600 hover:scale-110 transition-transform cursor-pointer" title="Mid Blue"></button>
+                                    <button onclick="setCardTextColor('#0f172a')" class="w-6 h-6 rounded-full bg-slate-900 border border-slate-600 hover:scale-110 transition-transform cursor-pointer" title="Dark Slate"></button>
+                                    <button onclick="setCardTextColor('#16a34a')" class="w-6 h-6 rounded-full bg-green-600 border border-slate-600 hover:scale-110 transition-transform cursor-pointer" title="Green"></button>
+                                    <button onclick="setCardTextColor('#dc2626')" class="w-6 h-6 rounded-full bg-red-600 border border-slate-600 hover:scale-110 transition-transform cursor-pointer" title="Red"></button>
+                                </div>
+                            </div>
+
+                            <!-- Corner Roundness settings -->
+                            <div class="space-y-1.5 font-mono">
+                                <div class="flex justify-between items-center text-[10px] uppercase font-bold text-slate-500">
+                                    <span>Border Radius</span>
+                                    <span id="wf-val-radius" class="text-white">8px</span>
+                                </div>
+                                <input type="range" min="0" max="40" value="8" oninput="setCardRadius(this.value)" class="w-full accent-blue-500 h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer">
+                            </div>
+
+                            <!-- Card Color setups -->
+                            <div class="space-y-1.5">
+                                <span class="text-[10px] uppercase font-bold text-slate-500">Bg Color Mode</span>
+                                <div class="flex items-center gap-2">
+                                    <button onclick="setCardBgColor('#ffffff')" class="w-6 h-6 rounded border border-slate-500 bg-white hover:scale-110 transition-transform cursor-pointer" title="White"></button>
+                                    <button onclick="setCardBgColor('#f0f9ff')" class="w-6 h-6 rounded border border-slate-500 bg-sky-50 hover:scale-110 transition-transform cursor-pointer" title="Soft Blue"></button>
+                                    <button onclick="setCardBgColor('#f0fdf4')" class="w-6 h-6 rounded border border-slate-500 bg-emerald-50 hover:scale-110 transition-transform cursor-pointer" title="Soft Green"></button>
+                                    <button onclick="setCardBgColor('#fff7ed')" class="w-6 h-6 rounded border border-slate-500 bg-orange-50 hover:scale-110 transition-transform cursor-pointer" title="Soft Orange"></button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- About Summary Section -->
+    <section id="about" class="py-24 px-6 relative">
+        <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            <div class="lg:col-span-7 space-y-6 scroll-reveal">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brandPrimary font-display">About Me</h2>
+                <h3 class="text-3xl md:text-5xl font-display font-black text-brandTextDark">Bridging Interactive Design & Functional Code</h3>
+                <p class="text-brandTextMuted leading-relaxed text-base">
+                    I translate design requirements into robust Webflow structures, functional React front-ends, and performance-minded automation tools. Helping cross-industry clients automate lead generation models and deploy scalable, clean architectures is where I excel.
+                </p>
+                <div class="grid grid-cols-2 gap-6 pt-4">
+                    <div class="p-5 rounded-2xl bg-white border border-blue-100 shadow-sm">
+                        <h4 class="text-4xl font-display font-black text-brandPrimary">3+</h4>
+                        <p class="text-xs text-brandTextMuted mt-1 uppercase tracking-wider font-semibold">Years Experience</p>
+                    </div>
+                    <div class="p-5 rounded-2xl bg-white border border-blue-100 shadow-sm">
+                        <h4 class="text-4xl font-display font-black text-brandPrimary">15+</h4>
+                        <p class="text-xs text-brandTextMuted mt-1 uppercase tracking-wider font-semibold">Enterprise Deployments</p>
+                    </div>
+                </div>
+            </div>
+            <div class="lg:col-span-5 scroll-reveal">
+                <div class="relative group tilt-card">
+                    <div class="absolute -inset-2 bg-gradient-to-r from-blue-600 to-indigo-500 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
+                    <div class="relative p-8 glassmorphism rounded-2xl space-y-6 tilt-inner">
+                        <h4 class="text-xl font-bold text-brandTextDark font-display">Developer Directory</h4>
+                        <ul class="space-y-4 text-sm text-brandTextMuted font-medium">
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-graduation-cap text-brandPrimary w-5 text-base"></i>
+                                <span>B.E., Acharya Institute of Technology</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-location-dot text-brandPrimary w-5 text-base"></i>
+                                <span>Based in Pune, India</span>
+                            </li>
+                            <li class="flex items-center gap-3">
+                                <i class="fa-solid fa-envelope text-brandPrimary w-5 text-base"></i>
+                                <span class="truncate">vishwakarmaplc@gmail.com</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Professional Experience Timeline -->
+    <section id="experience" class="py-24 px-6 relative">
+        <div class="max-w-4xl mx-auto space-y-12">
+            <div class="text-center space-y-4 scroll-reveal">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brandPrimary font-display">Timeline</h2>
+                <h3 class="text-4xl md:text-5xl font-display font-black text-brandTextDark">Work History</h3>
+            </div>
+
+            <div class="relative space-y-12 scroll-reveal text-left">
+                <!-- Job 1 -->
+                <div class="relative">
+                    <div class="space-y-3 bg-white p-6 border border-blue-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h4 class="text-xl font-bold text-brandTextDark font-display">Software Developer</h4>
+                            <span class="px-3 py-1 rounded-full bg-blue-100 text-brandPrimary text-xs font-bold">2+ Years</span>
+                        </div>
+                        <p class="text-sm font-semibold text-brandPrimary">CodeWalnut & LeadWalnut</p>
+                        <p class="text-sm text-brandTextMuted leading-relaxed font-medium">
+                            Engineered core dynamic features and mapped secure API environments. Configured custom plugin layers to support client tracking and data parsing, alongside high-converting lead landing tools.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Job 2 -->
+                <div class="relative">
+                    <div class="space-y-3 bg-white p-6 border border-blue-100 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <h4 class="text-xl font-bold text-brandTextDark font-display">Webflow Developer</h4>
+                            <span class="px-3 py-1 rounded-full bg-blue-100 text-brandPrimary text-xs font-bold">6 Months</span>
+                        </div>
+                        <p class="text-sm font-semibold text-brandPrimary">Pavero</p>
+                        <p class="text-sm text-brandTextMuted leading-relaxed font-medium">
+                            Managed cross-industry visual styles and interactions. Solved rendering, loading and SEO constraints, and created customizable components for branding agency clients.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-24 px-6 bg-brandAccentBg/40 relative">
+        <div class="max-w-6xl mx-auto space-y-12">
+            <div class="text-center space-y-4 scroll-reveal">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-brandPrimary font-display">Technical Stack</h2>
+                <h3 class="text-4xl md:text-5xl font-display font-black text-brandTextDark">Core Capabilities</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 scroll-reveal text-left">
+                <!-- Skill Category 1 -->
+                <div class="p-6 bg-white border border-blue-100 rounded-2xl space-y-4 shadow-sm hover:border-brandPrimary transition-all duration-300 tilt-card">
+                    <div class="text-brandPrimary text-3xl"><i class="fa-solid fa-layer-group"></i></div>
+                    <h4 class="text-lg font-bold text-brandTextDark font-display">Platforms</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">Webflow</span>
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">WordPress</span>
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">Elementor / Divi</span>
+                    </div>
+                </div>
+
+                <!-- Skill Category 2 -->
+                <div class="p-6 bg-white border border-blue-100 rounded-2xl space-y-4 shadow-sm hover:border-brandPrimary transition-all duration-300 tilt-card">
+                    <div class="text-brandPrimary text-3xl"><i class="fa-solid fa-code"></i></div>
+                    <h4 class="text-lg font-bold text-brandTextDark font-display">Languages & Frameworks</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">React.js</span>
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">Tailwind CSS</span>
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">TypeScript</span>
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">JavaScript</span>
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">Core Java</span>
+                    </div>
+                </div>
+
+                <!-- Skill Category 3 -->
+                <div class="p-6 bg-white border border-blue-100 rounded-2xl space-y-4 shadow-sm hover:border-brandPrimary transition-all duration-300 tilt-card">
+                    <div class="text-brandPrimary text-3xl"><i class="fa-solid fa-gears"></i></div>
+                    <h4 class="text-lg font-bold text-brandTextDark font-display">Automation</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">Zapier</span>
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">Make.com</span>
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">Clay</span>
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">n8n</span>
+                    </div>
+                </div>
+
+                <!-- Skill Category 4 -->
+                <div class="p-6 bg-white border border-blue-100 rounded-2xl space-y-4 shadow-sm hover:border-brandPrimary transition-all duration-300 tilt-card">
+                    <div class="text-brandPrimary text-3xl"><i class="fa-solid fa-database"></i></div>
+                    <h4 class="text-lg font-bold text-brandTextDark font-display">Infrastructure</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">MySQL</span>
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">Oracle</span>
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">REST APIs</span>
+                        <span class="px-2.5 py-1 bg-blue-50 border border-blue-100 rounded text-xs font-semibold text-brandTextDark">Postman</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Footer -->
+    <section id="contact" class="py-24 px-6 relative">
+        <div class="max-w-4xl mx-auto glassmorphism p-8 md:p-12 rounded-3xl border border-blue-200 text-center space-y-8 scroll-reveal shadow-lg">
+            <h2 class="text-3xl md:text-5xl font-display font-black text-brandTextDark">Let's Collaborate</h2>
+            <p class="text-brandTextMuted max-w-xl mx-auto font-medium">
+                Want to build highly responsive layout templates, configure robust custom integrations, or establish API-based automatic page-generating workflows? Get in touch.
+            </p>
+            
+            <div class="flex flex-wrap items-center justify-center gap-6">
+                <a href="mailto:vishwakarmaplc@gmail.com" class="px-6 py-3 rounded-xl bg-brandPrimary hover:bg-blue-700 text-white font-bold flex items-center gap-2 transition-all hover:scale-105 shadow-md shadow-blue-500/10">
+                    <i class="fa-solid fa-envelope"></i> vishwakarmaplc@gmail.com
+                </a>
+                <a href="tel:8970139581" class="px-6 py-3 rounded-xl bg-white border border-blue-200 text-brandTextDark font-bold flex items-center gap-2 transition-all hover:scale-105 shadow-sm">
+                    <i class="fa-solid fa-phone text-brandPrimary"></i> +91 8970139581
+                </a>
+                <a href="https://www.linkedin.com/in/vishwakarma-kambar/" target="_blank" class="px-6 py-3 rounded-xl bg-white border border-blue-200 text-brandTextDark font-bold flex items-center gap-2 transition-all hover:scale-105 shadow-sm">
+                    <i class="fa-brands fa-linkedin text-brandPrimary"></i> LinkedIn
+                </a>
+            </div>
+            
+            <div class="border-t border-blue-100 pt-8 mt-8 text-xs text-brandTextMuted font-semibold">
+                &copy; <span id="year"></span> Vishwakarma Kambar. Powered by Tailwind, GSAP, and Three.js.
+            </div>
+        </div>
+    </section>
+
+    <!-- Three.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP for scroll trigger and reveal animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        // Update Footer Year
+        document.getElementById('year').innerText = new Date().getFullYear();
+
+        // Custom Cursor trailing logic
+        const cursor = document.getElementById('custom-cursor');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.1,
+                ease: 'power2.out'
+            });
+        });
+
+        // Hover scale for interactive elements targeting custom cursor
+        const interactiveElements = document.querySelectorAll('a, button, input, [onclick]');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.width = '40px';
+                cursor.style.height = '40px';
+                cursor.style.backgroundColor = 'rgba(37, 99, 235, 0.1)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursor.style.width = '20px';
+                cursor.style.height = '20px';
+                cursor.style.backgroundColor = 'transparent';
+            });
+        });
+
+        // Mobile Menu Toggle
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- Interactive Automation Pipeline Simulator logic ---
+        const btnRun = document.getElementById('run-simulation');
+        const simLogs = document.getElementById('simulation-logs');
+        const previewCard = document.getElementById('simulated-preview-card');
+        const previewTitle = document.getElementById('preview-title');
+
+        btnRun.addEventListener('click', () => {
+            let inputUrl = document.getElementById('simulator-url').value.trim();
+            if (!inputUrl) {
+                inputUrl = "linkedin.com/in/john-doe";
+            }
+
+            // Extract simulated username
+            const nameMatch = inputUrl.match(/in\/([a-zA-Z0-9\-]+)/);
+            const username = nameMatch ? nameMatch[1].replace('-', ' ') : "Prospect Profile";
+            const cleanName = username.charAt(0).toUpperCase() + username.slice(1);
+
+            // Clear previous simulation run logs
+            simLogs.innerHTML = "";
+            previewCard.classList.add('hidden', 'opacity-0', 'scale-95');
+
+            const steps = [
+                { text: `[1/4] Intercepting webhook signal... URL parsed: ${inputUrl}`, delay: 500 },
+                { text: `[2/4] Triggering Clay API... Extracting professional nodes & data models...`, delay: 1500 },
+                { text: `[3/4] Make.com scenario executing... Injecting fields into structured Webflow CMS...`, delay: 2800 },
+                { text: `[4/4] Webflow Template build successfully deployed over Web Services.`, delay: 4000 }
+            ];
+
+            steps.forEach((step, idx) => {
+                setTimeout(() => {
+                    const p = document.createElement('p');
+                    p.className = idx === 3 ? "text-green-600 font-bold" : "text-brandTextDark";
+                    p.innerHTML = `<i class="fa-solid ${idx === 3 ? 'fa-check' : 'fa-spinner fa-spin'} mr-2"></i> ${step.text}`;
+                    simLogs.appendChild(p);
+
+                    if (idx === 3) {
+                        // Display visual preview card
+                        previewTitle.innerText = `${cleanName}'s Personal Landing Page`;
+                        previewCard.classList.remove('hidden');
+                        setTimeout(() => {
+                            previewCard.classList.remove('opacity-0', 'scale-95');
+                            previewCard.classList.add('opacity-100', 'scale-100');
+                        }, 100);
+                    }
+                }, step.delay);
+            });
+        });
+
+        // --- Card Tilt Interaction Logic ---
+        const cards = document.querySelectorAll('.tilt-card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left - (rect.width/2);
+                const y = e.clientY - rect.top - (rect.height/2);
+                
+                // Rotational angle limits
+                const rotationX = -(y / (rect.height/2)) * 10; 
+                const rotationY = (x / (rect.width/2)) * 10;
+                
+                card.style.transform = `rotateX(${rotationX}deg) rotateY(${rotationY}deg) scale(1.02)`;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+            });
+        });
+
+        // --- GSAP Scroll-Triggered Reveal Animations ---
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Hero Content Entrance
+        gsap.from("#hero > div > *", {
+            y: 40,
+            opacity: 0,
+            duration: 1.2,
+            stagger: 0.2,
+            ease: "power3.out"
+        });
+
+        // Staggered reveal for general components
+        gsap.utils.toArray(".scroll-reveal").forEach(element => {
+            gsap.from(element, {
+                scrollTrigger: {
+                    trigger: element,
+                    start: "top 85%",
+                    toggleActions: "play none none none"
+                },
+                y: 40,
+                opacity: 0,
+                duration: 1,
+                ease: "power2.out"
+            });
+        });
+
+        // --- Three.js Interactive 3D Torus Background ---
+        const canvas = document.getElementById('three-canvas');
+        const scene = new THREE.Scene();
+
+        // Camera setup
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 4.5;
+
+        // Renderer setup
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        // Create large rotating 3D Torus Knot Mesh
+        const geometry = new THREE.TorusKnotGeometry(1.2, 0.35, 150, 20);
+        
+        // Premium wireframe material configuration utilizing mid-blue theme accents
+        const material = new THREE.MeshStandardMaterial({
+            color: 0x3b82f6,
+            wireframe: true,
+            roughness: 0.01,
+            metalness: .3
+        });
+
+        const torusKnot = new THREE.Mesh(geometry, material);
+        scene.add(torusKnot);
+
+        // Lighting System
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const pointLight = new THREE.PointLight(0x60a5fa, 2, 50);
+        pointLight.position.set(5, 5, 5);
+        scene.add(pointLight);
+
+        // Mouse coordinates tracker
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth) - 0.5;
+            mouseY = (event.clientY / window.innerHeight) - 0.5;
+        });
+
+        // Window resize handler
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Animation Loop
+        const clock = new THREE.Clock();
+
+        const animate = () => {
+            requestAnimationFrame(animate);
+
+            const elapsedTime = clock.getElapsedTime();
+
+            // Passive continuous rotation
+            torusKnot.rotation.y = elapsedTime * 0.12;
+            torusKnot.rotation.x = elapsedTime * 0.08;
+
+            // Follow mouse coordinates with soft lag interpolation
+            torusKnot.rotation.y += mouseX * 0.8;
+            torusKnot.rotation.x += mouseY * 0.8;
+
+            // Scale and rotate dynamically with scroll progress
+            const scrollY = window.scrollY;
+            const targetScale = Math.max(0.6, 1.2 - (scrollY / window.innerHeight) * 0.5);
+            torusKnot.scale.set(targetScale, targetScale, targetScale);
+            
+            // Push object position left/right based on scroll
+            torusKnot.position.x = (scrollY / window.innerHeight) * 1.5;
+
+            renderer.render(scene, camera);
+        };
+
+        animate();
+    </script>
+    <script>
+    const targetCard = document.getElementById('wf-interactive-demo-card');
+
+    // Feature 1: Live padding spacing adjustments
+    function setCardPadding(padValue) {
+        targetCard.style.padding = padValue;
+
+        // Sync and update the spacing box numbers
+        document.getElementById('wf-val-pad-top').innerText = padValue;
+        document.getElementById('wf-val-pad-bottom').innerText = padValue;
+        document.getElementById('wf-val-pad-left').innerText = padValue;
+        document.getElementById('wf-val-pad-right').innerText = padValue;
+
+        // --- Active Button State Toggler ---
+        const buttons = document.querySelectorAll("#webflow-designer button[onclick^='setCardPadding']");
+        buttons.forEach(btn => {
+            if (btn.getAttribute('onclick').includes(padValue)) {
+                btn.className = "p-1 bg-blue-600 text-white rounded font-bold transition-colors";
+            } else {
+                btn.className = "p-1 bg-slate-800 border border-slate-700 rounded text-slate-300 hover:text-white hover:bg-slate-700 transition-colors";
+            }
+        });
+    }
+
+    // Feature 2: Typography font sizing
+    function setCardFontSize(fontSize) {
+        document.getElementById('wf-demo-card-desc').style.fontSize = fontSize;
+
+        // --- Active Button State Toggler ---
+        const buttons = document.querySelectorAll("#webflow-designer button[onclick^='setCardFontSize']");
+        buttons.forEach(btn => {
+            if (btn.getAttribute('onclick').includes(fontSize)) {
+                btn.className = "p-1.5 bg-blue-600 text-white rounded font-bold transition-colors";
+            } else {
+                btn.className = "p-1.5 bg-slate-800 border border-slate-700 rounded text-slate-300 hover:text-white hover:bg-slate-700 transition-colors";
+            }
+        });
+    }
+
+    // Feature 3: Card text color adjustment
+    function setCardTextColor(colorValue) {
+        document.getElementById('wf-demo-card-title').style.color = colorValue;
+        document.getElementById('wf-demo-card-desc').style.color = colorValue;
+
+        // --- Active Ring Indicator Toggle ---
+        const buttons = document.querySelectorAll("#webflow-designer button[onclick^='setCardTextColor']");
+        buttons.forEach(btn => {
+            if (btn.getAttribute('onclick').includes(colorValue)) {
+                btn.classList.add('ring-2', 'ring-blue-400', 'ring-offset-2', 'ring-offset-wfGrayDark');
+            } else {
+                btn.classList.remove('ring-2', 'ring-blue-400', 'ring-offset-2', 'ring-offset-wfGrayDark');
+            }
+        });
+    }
+
+    // Feature 4: Corner Roundness configurations
+    function setCardRadius(radiusVal) {
+        targetCard.style.borderRadius = `${radiusVal}px`;
+        document.getElementById('wf-val-radius').innerText = `${radiusVal}px`;
+    }
+
+    // Feature 5: Card Background coloring
+    function setCardBgColor(bgColor) {
+        targetCard.style.backgroundColor = bgColor;
+
+        // --- Active Ring Indicator Toggle ---
+        const buttons = document.querySelectorAll("#webflow-designer button[onclick^='setCardBgColor']");
+        buttons.forEach(btn => {
+            if (btn.getAttribute('onclick').includes(bgColor)) {
+                btn.classList.add('ring-2', 'ring-blue-400', 'ring-offset-2', 'ring-offset-wfGrayDark');
+            } else {
+                btn.classList.remove('ring-2', 'ring-blue-400', 'ring-offset-2', 'ring-offset-wfGrayDark');
+            }
+        });
+    }
+
+    // Run active states setup on page load
+    document.addEventListener("DOMContentLoaded", () => {
+        setCardPadding('24px');
+        setCardFontSize('14px');
+        setCardTextColor('#2563eb');
+        setCardBgColor('#ffffff');
+    });
+</script>
+</body>
+</html>
